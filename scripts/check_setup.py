@@ -1,16 +1,23 @@
-"""Pre-course setup doctor.
+"""The setup doctor.
 
-Run:  uv run python scripts/check_setup.py
+Run:  uv run bootcamp doctor
 
-Prints a green/red checklist. Every learner should see all green (warnings
-are fine) BEFORE the first class on September 14. Screenshot the output and
-post it in the cohort channel.
+Prints a green/red checklist. Every learner should see all green (warnings are
+fine) BEFORE their next session. Screenshot the output and post it in the cohort
+channel.
+
+THE LAST LINE IS COMPUTED, NOT TYPED. It used to read "See you September 14!"
+forever, so from the 15th onward the first thing a learner saw after a
+successful install was a date that had already passed -- which reads as software
+nobody has looked at since. It now names the next session from the curriculum,
+and says something true after the last one.
 """
 
 from __future__ import annotations
 
 import shutil
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -18,6 +25,24 @@ ROOT = Path(__file__).resolve().parent.parent
 OK = "✅"
 FAIL = "❌"
 WARN = "⚠️ "
+
+
+def _next_session(today: date | None = None) -> str:
+    """ "See you Tuesday, session 2" -- the next session on or after today.
+
+    Reads the curriculum rather than a literal, because a greeting frozen at the
+    first session's date is wrong on every day of the course except one.
+    """
+    sys.path.insert(0, str(ROOT / "src"))
+    from bootcamp_agent.curriculum import CHAPTERS
+
+    now = today or date.today()
+    upcoming = [chapter for chapter in CHAPTERS if chapter.on >= now]
+    if not upcoming:
+        return "That is the whole course, and your setup still works."
+    session = upcoming[0]
+    when = "today" if session.on == now else session.on.strftime("%A %d %B")
+    return f"Next up: session {session.number}, {session.title} — {when}."
 
 
 def main() -> int:
@@ -111,7 +136,7 @@ def main() -> int:
     if failures:
         print(f"\n{failures} problem(s) found — fix them and rerun.")
         return 1
-    print("\nAll set. See you September 14!")
+    print(f"\nAll set. {_next_session()}")
     return 0
 
 
