@@ -3,11 +3,21 @@
 Ten minutes, once.
 
 ```bash
-git clone git@github.com:Gecko-Academy/dev3pack-cohort-2026-09.git
+git clone https://github.com/Gecko-Academy/dev3pack-cohort-2026-09.git
 cd dev3pack-cohort-2026-09
 uv sync --group dev
 uv run bootcamp doctor
 ```
+
+Four commands, and the last one tells you whether the first three worked. It
+ends on **"All set."**
+
+Two things that account for most first-hour failures. **Stay in that folder** —
+`cd dev3pack-cohort-2026-09` is not decoration, and running a command outside
+it is what produces `bootcamp: command not found`. And on **Windows**, use Git
+Bash or WSL2 rather than PowerShell.
+
+No uv yet? [`SETUP.md`](../../../SETUP.md) installs it, and git, per platform.
 
 `bootcamp doctor` says what is missing and how to fix it. When it is green, open
 `00-START-HERE.ipynb` in your notebook editor: it links every unit in order and

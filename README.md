@@ -37,8 +37,12 @@ Three weeks. **15 sessions**. One source-grounded research assistant you can tes
 git clone https://github.com/Gecko-Academy/dev3pack-cohort-2026-09.git
 cd dev3pack-cohort-2026-09
 uv sync --group dev
+uv run bootcamp doctor        # says "All set." when the environment is ready
 uv run jupyter lab
 ```
+
+**Windows:** run these in **Git Bash** or WSL2, not PowerShell. The repository
+is public — there is nothing to request and nothing to wait for.
 
 If you have SSH keys set up, `git clone git@github.com:Gecko-Academy/dev3pack-cohort-2026-09.git`
 works too. HTTPS is above because it needs nothing configured first.
