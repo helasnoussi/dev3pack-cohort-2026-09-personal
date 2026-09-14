@@ -36,10 +36,11 @@ Three weeks. **15 sessions**. One source-grounded research assistant you can tes
 ```bash
 git clone https://github.com/Gecko-Academy/dev3pack-cohort-2026-09.git
 cd dev3pack-cohort-2026-09
-uv sync --group dev
-uv run bootcamp doctor        # says "All set." when the environment is ready
-uv run jupyter lab
+uv run bootcamp start          # installs everything, then says whether it worked
 ```
+
+`start` is safe to run as many times as you like, and it ends by telling you the
+one command to type next. On macOS and Linux `make setup` is the same thing.
 
 **Windows:** run these in **Git Bash** or WSL2, not PowerShell. The repository
 is public — there is nothing to request and nothing to wait for.
@@ -106,6 +107,7 @@ Where everything lives, and what a student receives.
 | Path | What lives there | Students get it |
 |---|---|---|
 | `00-START-HERE.ipynb` | The map a learner opens first. Lists every notebook in order and ticks what is finished. | day one |
+| `Makefile` | Short names for the commands you run most: `make setup`, `make lab`, `make check`. Every target is a one-line wrapper around a `uv run` command, so it is a convenience and never a requirement — Windows has no `make` by default. | day one |
 | `units/` | The course. `en/` holds week-0 units, the fifteen sessions, the capstone, and the bonus track, each a directory of pages plus a notebook. | weekly |
 | `src/bootcamp_agent/` | The finished shape of the capstone package, and the check registry every exercise is graded by. | day one |
 | `tests/` | Behaviour contracts for the package — and the solved value of every exercise, which is why students never receive it. | **never** |
@@ -161,7 +163,7 @@ more week lands and you `git pull`.
 
 | Arrives | Date | What is added |
 |---|---|---|
-| Week 0 | now | Everything above except the sessions: the twelve week-0 units, the welcome pages, the bonus track and the whole toolchain (39 paths). |
+| Week 0 | now | Everything above except the sessions: the twelve week-0 units, the welcome pages, the bonus track and the whole toolchain (40 paths). |
 | Week 1 | Mon 14 Sep | unit1 |
 | Week 2 | Mon 21 Sep | unit2 |
 | Week 3 | Mon 28 Sep | unit3 |

@@ -19,6 +19,11 @@ from bootcamp_agent.evals import EvalError, format_report, load_cases, run_evals
 from bootcamp_agent.llm import get_client
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+
+#: The same marks the doctor and the notebook preflight use, so one learner
+#: reading three outputs sees one vocabulary.
+OK = "✅"
+FAIL = "❌"
 CORPUS_DIR = ROOT / "data" / "corpus"
 GOLDEN_PATH = ROOT / "data" / "evals" / "golden.jsonl"
 
@@ -73,6 +78,71 @@ def _doctor() -> int:
     from check_setup import main as check_setup_main
 
     return check_setup_main()
+
+
+def _start() -> int:
+    """From a fresh clone to a green doctor, in one command.
+
+    WHY THIS EXISTS. On day one, 26 learners forked the submissions repository
+    and 2 opened a pull request. Several reported `bootcamp: command not found`,
+    which is what you get for running a command from the wrong directory or
+    without `uv run` -- and the doctor, the thing that would have told them,
+    could not run until the install it was diagnosing had already worked.
+
+    So this does the install, then the diagnosis, then says the ONE next thing.
+    It is safe to run twice: every step checks before it acts.
+    """
+    import shutil
+    import subprocess
+
+    print("\nSetting up the course. This is safe to run as many times as you like.\n")
+
+    if not (ROOT / "pyproject.toml").is_file():
+        print(f"{FAIL} this is not the course folder: {Path.cwd()}", file=sys.stderr)
+        print(
+            "\n   Run it from inside the clone:\n"
+            "     cd dev3pack-cohort-2026-09\n"
+            "     uv run bootcamp start",
+            file=sys.stderr,
+        )
+        return 2
+    print(f"{OK} in the course folder")
+
+    if shutil.which("uv") is None:
+        print(f"{FAIL} uv is not installed", file=sys.stderr)
+        print(
+            "\n   macOS / Linux:  curl -LsSf https://astral.sh/uv/install.sh | sh\n"
+            '   Windows:        powershell -c "irm https://astral.sh/uv/install.ps1 | iex"\n'
+            "\n   Then close this terminal, open a new one, and run this again.",
+            file=sys.stderr,
+        )
+        return 2
+    print(f"{OK} uv is installed")
+
+    try:
+        import bootcamp_agent  # noqa: F401
+    except ImportError:
+        print("·  installing the course (about a minute the first time)…")
+        result = subprocess.run(["uv", "sync", "--group", "dev"], cwd=ROOT)
+        if result.returncode != 0:
+            print(f"\n{FAIL} `uv sync --group dev` failed, above.", file=sys.stderr)
+            return 1
+    print(f"{OK} the course is installed")
+
+    env, example = ROOT / ".env", ROOT / ".env.example"
+    if not env.exists() and example.is_file():
+        shutil.copyfile(example, env)
+        print(f"{OK} wrote .env (the offline lane; no key needed)")
+
+    print("\nChecking it works:\n")
+    failures = _doctor()
+
+    if failures:
+        print("\nFix the ❌ lines above, then run this again.")
+        return 1
+
+    print("\nYou are ready. Next:\n\n    uv run jupyter lab\n\nthen open 00-START-HERE.ipynb.\n")
+    return 0
 
 
 def _check(item_id: str) -> int:
@@ -414,6 +484,7 @@ def bootcamp(argv: list[str] | None = None) -> int:
         description="Check your setup and your chapter exercises.",
     )
     sub = parser.add_subparsers(dest="command")
+    sub.add_parser("start", help="install everything and check it works — run this first")
     sub.add_parser("doctor", help="check this machine: Python, kernel, corpus, provider lane")
     checker = sub.add_parser("check", help="run one item's notebook and print its scorecard")
     checker.add_argument(
@@ -439,6 +510,8 @@ def bootcamp(argv: list[str] | None = None) -> int:
     submitter.add_argument("--into", help="submissions root (default ./submissions)")
     args = parser.parse_args(argv)
 
+    if args.command == "start":
+        return _start()
     if args.command == "doctor":
         return _doctor()
     if args.command == "check":

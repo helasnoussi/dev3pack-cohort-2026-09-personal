@@ -83,6 +83,12 @@ REPO_MAP: tuple[tuple[str, str], ...] = (
         "The map a learner opens first. Lists every notebook in order and ticks what is finished.",
     ),
     (
+        "Makefile",
+        "Short names for the commands you run most: `make setup`, `make lab`, `make check`. "
+        "Every target is a one-line wrapper around a `uv run` command, so it is a convenience "
+        "and never a requirement — Windows has no `make` by default.",
+    ),
+    (
         "units/",
         "The course. `en/` holds week-0 units, the fifteen sessions, the capstone, and the bonus "
         "track, each a directory of pages plus a notebook.",

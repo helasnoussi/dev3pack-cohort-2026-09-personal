@@ -98,6 +98,10 @@ ALWAYS = (
     # on purpose, and it reads the curriculum live, so a newly published week
     # appears in it without this file changing.
     "00-START-HERE.ipynb",
+    # Short names for the commands a learner runs most. It is for them, so it
+    # ships; it is a convenience and never a requirement, because Windows has
+    # no `make` by default and every target is one `uv run` line.
+    "Makefile",
     # The pointer left where the old layout lived, so a student who pulled week 0
     # under `modules/` is told where it went rather than left with an empty dir.
     "modules/README.md",
