@@ -266,6 +266,53 @@ def _arrival(notebook: Path, when: str | None) -> str | None:
     return f"arrives {when}" if dated else "not published yet"
 
 
+def _no_evidence(item: object) -> str:
+    """Why this notebook cannot be handed in yet, or "" when it can.
+
+    A submission is a claim plus the evidence for it, and the evidence lives in
+    the saved cell outputs. Handing in a notebook that was never run used to
+    print `wrote ...` and exit 0, which is how somebody hands in nothing on day
+    one and finds out a week later.
+    """
+    import nbformat
+
+    from bootcamp_agent.coursework import evidence_of
+
+    notebook = getattr(item, "notebook", None)
+    if notebook is None or not notebook.is_file():
+        return ""
+    found = evidence_of(nbformat.read(notebook, as_version=4))
+
+    if found.never_ran:
+        return (
+            f"\n{item.id}: this notebook has never been run.\n\n"
+            f"  code cells        {found.code_cells}\n"
+            f"  cells executed    {found.executed_cells}\n"
+            f"  cells with output {found.cells_with_output}\n\n"
+            "Nothing was handed in. A submission is a claim plus the evidence for\n"
+            "it, and there is no evidence here.\n\n"
+            "Do this:\n"
+            "  1. Run every cell, top to bottom.\n"
+            "  2. Save the notebook.\n"
+            "  3. Run this command again."
+        )
+
+    if not getattr(item, "verifiable", True) and found.verdict_lines == 0:
+        return (
+            f"\n{item.id}: nothing in this notebook says an exercise passed.\n\n"
+            f"{item.id} is assistant-driven, so nobody re-runs it — the ✅ lines your\n"
+            "own notebook printed are the only evidence there is, and this file has\n"
+            f"none. Expected lines like:  ✅ {item.id}-e1 passed\n\n"
+            f"  cells executed    {found.executed_cells}\n"
+            f"  ✅/❌ lines found  {found.verdict_lines}\n\n"
+            "Nothing was handed in.\n\n"
+            "Most likely you ran the cells but did not SAVE. Press Ctrl+S, then run\n"
+            "this again. Or you have not run the check() cells yet — run them, save,\n"
+            "then run this again."
+        )
+    return ""
+
+
 def _submit(chapter_id: str, github: str, cohort: str, into: str | None) -> int:
     """Build the bundle a learner opens a pull request with."""
     from pathlib import Path
@@ -282,6 +329,12 @@ def _submit(chapter_id: str, github: str, cohort: str, into: str | None) -> int:
     except (KeyError, submission.SubmissionError) as error:
         print(f"cannot submit that: {error}")
         return 2
+
+    # Before anything is built, run or printed: is there anything to hand in?
+    refusal = _no_evidence(item)
+    if refusal:
+        print(refusal, file=sys.stderr)
+        return 3
 
     if not item.verifiable:
         # Sessions 1 and 10 need an assistant open — they edit its configuration

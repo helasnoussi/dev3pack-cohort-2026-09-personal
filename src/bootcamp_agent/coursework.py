@@ -55,10 +55,69 @@ class Scorecard:
         return f"{self.chapter_id}: {len(self.passed)}/{self.total} passed"
 
 
+def _cells(notebook: object) -> list:
+    """A notebook's cells, whether it came from nbformat or from JSON.
+
+    `nbformat.NotebookNode` is a dict subclass with attribute access, so
+    `notebook.cells` works for it and returns `[]` for a plain dict -- silently,
+    which would report that nothing ran rather than failing. A plain dict is
+    what a notebook read with `json.load` is, and what Colab hands back.
+    """
+    if isinstance(notebook, dict):
+        return list(notebook.get("cells", []))
+    return list(getattr(notebook, "cells", []))
+
+
+@dataclass(frozen=True)
+class Evidence:
+    """What a notebook can prove about itself, before anything is claimed."""
+
+    code_cells: int
+    executed_cells: int
+    cells_with_output: int
+    verdict_lines: int
+
+    @property
+    def never_ran(self) -> bool:
+        """Nothing here was executed AND nothing printed.
+
+        Both, not either. `execution_count` is the usual signal, but some tools
+        strip it while keeping the outputs -- and the outputs are the evidence
+        that actually counts, because `stored_scorecard` reads those and never
+        looks at the counter. A notebook with outputs has proof of a run even
+        when the counter is gone.
+        """
+        return self.executed_cells == 0 and self.cells_with_output == 0
+
+
+def evidence_of(notebook: object) -> Evidence:
+    """Count what a notebook actually holds, so a hand-in can refuse an empty one.
+
+    A submission is a claim plus the evidence for it. On 2026-09-14 a learner
+    handed in a notebook with `execution_count: None` on all seventeen cells and
+    no outputs: the claim said `not_reached`, the command printed `wrote ...`,
+    and it exited 0. Counting first is what turns that into a refusal.
+    """
+    code = [cell for cell in _cells(notebook) if cell.get("cell_type") == "code"]
+    executed = [cell for cell in code if cell.get("execution_count") is not None]
+    with_output = [cell for cell in code if cell.get("outputs")]
+    verdicts = [
+        line
+        for line in outputs_of(notebook)
+        if _PASS.match(line.strip()) or _FAIL.match(line.strip())
+    ]
+    return Evidence(
+        code_cells=len(code),
+        executed_cells=len(executed),
+        cells_with_output=len(with_output),
+        verdict_lines=len(verdicts),
+    )
+
+
 def outputs_of(notebook: object) -> list[str]:
     """Every text line a notebook's cells printed, in order."""
     lines: list[str] = []
-    for cell in getattr(notebook, "cells", []):
+    for cell in _cells(notebook):
         for output in cell.get("outputs", []) or []:
             text = output.get("text") or ""
             if not text and "data" in output:
