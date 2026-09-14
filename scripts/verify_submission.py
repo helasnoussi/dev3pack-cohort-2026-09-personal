@@ -170,9 +170,12 @@ def main(argv: list[str] | None = None) -> int:
 
     claim = read_claim(args.directory)
     result = claim["result"]
-    print(
-        f"\nVERIFIED: {len(result['passed'])} passed, score {result['score']}/{result['max_score']}"
+    # An unmarked item has no score, and `None/None` reads like a fault rather
+    # than like week 0 being self-paced on purpose.
+    marks = (
+        f"score {result['score']}/{result['max_score']}" if result.get("scored") else "not marked"
     )
+    print(f"\nVERIFIED: {len(result['passed'])} passed, {marks}")
     return 0
 
 

@@ -41,9 +41,11 @@ def render_markdown(track: Track) -> str:
         f"across {len(scored)} marked chapters.",
         "",
         "A cell shows what that chapter was worth. `handed in` means the work was",
-        "submitted and is not marked: week 0 is self-paced, and chapters 4 and 10 need",
-        "an assistant open so they can never be re-run. An empty cell means nothing has",
-        "been submitted yet, which is not the same as a zero.",
+        "submitted and is not marked, which now means week 0 only: it is self-paced.",
+        "Every session carries marks. Sessions 1 and 10 need an assistant open, so",
+        "nothing can re-run them and their rows read `unverifiable` -- a fact about",
+        "the item, never about the student. An empty cell means nothing has been",
+        "submitted yet, which is not the same as a zero.",
         "",
     ]
 

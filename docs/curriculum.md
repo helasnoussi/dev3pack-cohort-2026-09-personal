@@ -121,7 +121,7 @@ Every exercise in `notebook.ipynb` has the same shape: context, numbered instruc
 
 ### Session 1 — Configure the assistant and the repository instructions (Mon 14 Sep)
 
-`ch01` · handed in, not marked · [page](../units/en/unit1/session-01-assistant-configuration/introduction.mdx)
+`ch01` · 1 checks, marked from what you save · [page](../units/en/unit1/session-01-assistant-configuration/introduction.mdx)
 
 You leave with a coding assistant that reads this repository's policy before it edits, a scoped instruction set you wrote (`AGENTS.md` as the canonical file, `CLAUDE.md` and `.cursor/rules/*.mdc` pointing at it), the acceptance checks that decide when a change is done, and one record of the inspect → plan → edit → test → review loop with a change you refused. Day one also carries the orientation: the request → context → model → tool → verification mental model, and the capstone you build over three weeks.
 
@@ -177,7 +177,7 @@ You leave with two artifacts and one habit. The artifacts: a provider-neutral ev
 
 ### Session 10 — Skills and an architecture decision record (Fri 25 Sep)
 
-`ch10` · handed in, not marked · page — opens Fri 25 Sep
+`ch10` · 2 checks, marked from what you save · page — opens Fri 25 Sep
 
 You leave with two artifacts and one habit. The artifacts: a `SKILL.md` your assistant loads on demand, with a before-and-after pair of runs that shows what it changed, and a decision record for one architecture choice you already made in the capstone. The habit is the reversal test — a decision that does not name the measurement which would overturn it is an opinion, and week 2 ends by writing one that is not.
 

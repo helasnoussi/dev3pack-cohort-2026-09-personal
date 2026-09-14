@@ -75,8 +75,13 @@ class Submittable:
 
       * a week-0 unit runs perfectly well in CI and is NOT scored, because the
         prerequisite is self-paced and the founder chose to keep it ungraded;
-      * chapters 4 and 10 are assistant-driven, so they can never be re-run, and
-        are handed in rather than marked.
+      * sessions 1 and 10 are assistant-driven, so nothing can ever re-run them,
+        and they ARE scored -- on the evidence the learner saved.
+
+    That second case was wrong until 2026-09-14: `scored` was assigned from
+    `runs_in_ci`, so the two axes this docstring insists are separate were in fact
+    one boolean, and every session the course had promised marks for showed up as
+    "handed in".
 
     Collapsing the two would print "unverified" against work that was fine, which
     reads to a student as an accusation.
@@ -132,11 +137,24 @@ def resolve(token: str) -> Submittable:
         notebook=chapter.notebook,
         exercises=exercise_ids(chapter.chapter_id),
         verifiable=runs_in_ci,
-        scored=runs_in_ci,
+        # EVERY SESSION CARRIES MARKS, including the two nothing can re-run.
+        # `scored` used to be assigned from `runs_in_ci`, which welded together the
+        # two axes this dataclass exists to keep apart -- and the cost was not
+        # theoretical: a learner who did session 1 properly saw "handed in" where
+        # they had been promised a mark, and the subscriber's leaderboard showed
+        # them 0/0 because there was no number to send.
+        #
+        # Being unable to RE-RUN an exercise is not the same as being unable to
+        # MARK it. `ch01-e1` and `ch10-e1` are pure functions of a dict the learner
+        # wrote, with real substance thresholds; what cannot be replayed is the
+        # assistant session around them, so the row stays `unverifiable` and says so.
+        scored=True,
         note=(
             ""
             if runs_in_ci
-            else "assistant-driven, so it cannot be re-run; handed in rather than marked"
+            else (
+                "assistant-driven, so it cannot be re-run; the marks rest on the evidence you saved"
+            )
         ),
     )
 

@@ -117,17 +117,31 @@ def read_entry(claim_path: Path, verified_hashes: frozenset[str] = frozenset()) 
 
     digest = str(claim.get("evidence", {}).get("notebook_sha256", ""))
     result = claim.get("result", {})
+
+    # THE CURRICULUM DECIDES WHAT AN ITEM IS WORTH, NEVER THE CLAIM. Reading
+    # `scored`, `score` and `max_score` straight out of the bundle let the party
+    # being marked state its own mark: nothing in the public CI validates those
+    # three numbers, so a hand-edited `"score": 9999` rendered as 9999. It also
+    # froze every row at whatever the curriculum said on the day it was submitted,
+    # so a marks change could never reach work already handed in.
+    #
+    # Recomputing from `passed` fixes both. `passed` is still the learner's claim
+    # -- only a re-run can settle that, which is what the `verified` tier is for --
+    # but it is now a claim about WHICH EXERCISES, not about how many points those
+    # are worth, and ids that do not belong to this item are dropped rather than paid.
+    passed = tuple(e for e in (result.get("passed", []) or ()) if e in item.exercises)
+    help = submission.Help.from_dict(claim.get("help"))
     return Entry(
         github=github,
         item=item.id,
         submitted_at=str(claim.get("submitted_at", "")),
         ran=bool(result.get("ran", True)),
-        passed=tuple(result.get("passed", []) or ()),
+        passed=passed,
         failed=tuple(result.get("failed", []) or ()),
         not_reached=tuple(result.get("not_reached", []) or ()),
-        scored=bool(result.get("scored", item.scored)),
-        score=result.get("score"),
-        max_score=result.get("max_score"),
+        scored=item.scored,
+        score=submission.score_for(passed, help) if item.scored else None,
+        max_score=item.max_score,
         tier=_tier(claim, item, digest in verified_hashes),
         note=str(claim.get("note", "")),
     )

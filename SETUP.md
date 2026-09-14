@@ -89,7 +89,20 @@ Week 1 appears on Monday 14 September, week 2 on the 21st, week 3 on the 28th.
 Run `git pull` at the start of each week to get it. Nothing you have written is touched by a pull, because you never push to this
 repository — see *Saving your own work* below.
 
-## 5. Install the project
+## 5. Install it and check it works
+
+```bash
+uv run bootcamp start
+```
+
+That is the whole of steps 5 and 6. It is safe to run as many times as you
+like — every step checks before it acts — and it ends by naming the one command
+to run next.
+
+The rest of this section is what it does, for when you want to do a piece by
+hand or something went wrong in the middle.
+
+**The install.**
 
 ```bash
 uv sync --group dev
@@ -100,7 +113,7 @@ cp .env.example .env
 (pytest, ruff, notebook tooling). You never activate the venv by hand — always
 prefix commands with `uv run`.
 
-## 6. Run the doctor
+**The check.**
 
 ```bash
 uv run bootcamp doctor
@@ -127,7 +140,7 @@ That notebook lists every part of the course in order, links each one, and ticks
 off what you have finished. Week 0 is open now, so you can begin the moment the
 doctor is green.
 
-## 7. Install an editor and ONE coding assistant
+## 6. Install an editor and ONE coding assistant
 
 Any of these works for the course — Session 4 covers configuring them properly:
 
@@ -140,7 +153,7 @@ Any of these works for the course — Session 4 covers configuring them properly
 You need a working login for whichever one you pick (free tiers are fine for the
 exercises). VS Code or PyCharm as the editor is your choice.
 
-## 8. (Optional, can wait) A real model for live calls
+## 7. (Optional, can wait) A real model for live calls
 
 The course runs offline by default on the FakeLLM. When you want real model
 answers, pick ONE. The first row needs no key and no account.

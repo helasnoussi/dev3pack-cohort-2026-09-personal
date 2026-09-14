@@ -95,5 +95,5 @@ Capstone: the source-grounded research assistant — opens with week 2 opens wit
 - 12 week-0 units with 40 checks, handed in and never marked.
 - 15 sessions, 12 of them running unattended in CI, with 36 scored checks; plus the capstone's 5.
 - 81 checks across the course.
-- 2 sessions are handed in rather than marked, because they are
-  assistant-driven and cannot be re-run; each says so in the table above.
+- 2 sessions are assistant-driven, so nothing can re-run them —
+  they are still marked, on the evidence you save in the notebook.

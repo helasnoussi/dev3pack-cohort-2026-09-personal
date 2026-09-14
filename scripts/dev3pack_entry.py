@@ -50,6 +50,7 @@ from bootcamp_agent.curriculum import (  # noqa: E402
     WEEK_TITLES,
 )
 from bootcamp_agent.hints import FULL_MARKS  # noqa: E402
+from bootcamp_agent.submission import resolve  # noqa: E402
 
 OUT_DIR = ROOT / "docs" / "dev3pack"
 SHEET = OUT_DIR / "curriculum-entry.md"
@@ -174,7 +175,14 @@ def _module_block(chapter, week: int) -> list[str]:
     introduction = _read(directory / "introduction.mdx")
     outcome = _section(introduction, "Outcome")
     exercises = _exercises(chapter.chapter_id) if chapter.has_notebook else []
-    marks = len(exercises) * FULL_MARKS if chapter.runs_in_ci else None
+    # `runs_in_ci` answers "can we replay it", not "is it worth marks" -- the two
+    # came apart when sessions 1 and 10 became scored.
+    # Session 15 is demo day and has no notebook, so it cannot be resolved at all.
+    marks = (
+        len(exercises) * FULL_MARKS
+        if chapter.has_notebook and resolve(chapter.chapter_id).scored
+        else None
+    )
 
     lines = [
         f"## Week {week} · Module {chapter.number}: {chapter.title}",
