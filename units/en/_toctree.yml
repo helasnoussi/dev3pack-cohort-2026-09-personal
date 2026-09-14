@@ -3,6 +3,8 @@
   sections:
   - local: unit0/introduction
     title: "Welcome to the Dev3Pack AI Engineering Bootcamp"
+  - local: unit0/get-settled
+    title: "Get settled"
   - local: unit0/onboarding
     title: "Onboarding"
   - local: unit0/runtime-lanes

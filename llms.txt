@@ -34,6 +34,7 @@ uv run bootcamp submit chNN --github YOU  # build the hand-in bundle
 ## Unit 0 — before the course starts
 
 - [Welcome to the Dev3Pack AI Engineering Bootcamp](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/introduction.html)
+- [Get settled](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/get-settled.html)
 - [Onboarding](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/onboarding.html)
 - [Runtime lanes](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/runtime-lanes.html)
 - [Handing work in](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/how-to-submit.html)

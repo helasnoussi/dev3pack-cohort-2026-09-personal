@@ -151,6 +151,7 @@ REPO_MAP: tuple[tuple[str, str], ...] = (
 UNIT0 = "unit0"
 UNIT0_ORDER = (
     "introduction",
+    "get-settled",
     "onboarding",
     "runtime-lanes",
     "how-to-submit",
