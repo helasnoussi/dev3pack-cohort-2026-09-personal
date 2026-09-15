@@ -430,7 +430,12 @@ def _submit(chapter_id: str, github: str, cohort: str, into: str | None) -> int:
         # to be, rather than a failure being manufactured. The ids come from
         # `manual_reason` in the curriculum, never from a list written here.
         print(f"{item.id} ({item.title}) — {item.note}")
-        print("submitting your notebook as it stands, with no re-run and no marks.")
+        # "and no marks" was true until sessions 1 and 10 became scored, and then
+        # this line went on saying it directly above "score 100/100". A learner
+        # reading a tool contradict itself about their own marks has no way to
+        # tell which half is the bug.
+        print("submitting your notebook as it stands, with no re-run.")
+        print("The marks below are read from the outputs you saved.")
         # "As it stands" means what the notebook SAYS. Handing in `None` here
         # filled `not_reached` with every exercise and claimed `ran: false`, so
         # a learner whose notebook plainly showed `✅ ch01-e1 passed` was told it
