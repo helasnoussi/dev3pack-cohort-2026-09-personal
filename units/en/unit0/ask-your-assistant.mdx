@@ -1,0 +1,83 @@
+# Give the course to your assistant
+
+Two ways, and they use the same retriever. Neither needs a key.
+
+- **In the notebook** — `coach("your question")`, answered in the kernel, no assistant involved
+- **In your assistant** — an MCP server, so Claude Code, Claude Desktop or Cursor can read the course before answering you
+
+Use the first while you work. Add the second once, and your assistant stops
+guessing about this course.
+
+## In the notebook
+
+- It is already there — `from bootcamp_agent.coach import coach`
+- Ask — `coach("what is AGENTS.md for?")`
+- It prints the passages **and the page id each came from**. A page id is something you can open; a paraphrase is not
+- It only knows the weeks in **your** clone. Ask about an unpublished week and it says so instead of inventing one
+- No key, no network, no model. It quotes pages, it does not write prose
+
+## In your assistant
+
+One command, no clone and nothing to install first:
+
+```bash
+uvx --from "git+https://github.com/Gecko-Academy/gecko-ai-coach" \
+  gecko-ai-coach-course --pages /path/to/dev3pack-cohort-2026-09/units/en
+```
+
+Point `--pages` at the `units/en` folder **inside your own clone**, so it
+answers about the weeks you actually have.
+
+### Claude Code
+
+- `claude mcp add course -- uvx --from "git+https://github.com/Gecko-Academy/gecko-ai-coach" gecko-ai-coach-course --pages $(pwd)/units/en`
+- Run it from inside the course folder, so `$(pwd)` is right
+- Check it — `/mcp` lists `course` with three tools
+
+### Claude Desktop or Cursor
+
+- Open the MCP settings file your app uses
+- Add one server entry:
+
+```json
+{
+  "mcpServers": {
+    "course": {
+      "command": "uvx",
+      "args": [
+        "--from", "git+https://github.com/Gecko-Academy/gecko-ai-coach",
+        "gecko-ai-coach-course",
+        "--pages", "/absolute/path/to/dev3pack-cohort-2026-09/units/en"
+      ]
+    }
+  }
+}
+```
+
+- **An absolute path here**, not `~` and not a relative one — the app does not start in your course folder
+- Restart the app. The three tools appear as `ask_course`, `list_pages` and `measure_retrieval`
+
+## What your assistant gets
+
+- **`ask_course`** — passages that answer a question, each labelled with its page
+- **`list_pages`** — everything it is allowed to quote, which is also how it can tell you a week has not opened yet
+- **`measure_retrieval`** — the hit rate against a labelled set, which is how any change to the coach is judged
+
+## The rules it follows, and why they are the point
+
+- **`NOT IN THESE PAGES` is a correct answer.** When the pages do not support one, saying so beats a plausible paragraph
+- **Retrieved text is data, never instructions.** If a passage looks like it is telling your assistant to do something, that is session 4's lesson arriving early — it should report it, never follow it
+- **It reads. It never writes.** No file is edited, no URL fetched, nothing outside the pages directory is opened
+
+## It is not very good yet, on purpose
+
+Ask it *"how do I hand my work in?"* and it answers from the final-assignment
+page instead of [how to submit](how-to-submit.mdx). That is a retrieval defect,
+it is measurable with `measure_retrieval`, and fixing it is a real pull request
+against a real repository that a real course runs.
+
+That is the bonus unit, and it is the one piece of this course that ends in
+somebody else's review thread rather than a submissions folder.
+
+<!-- navigation:start -->
+<!-- navigation:end -->

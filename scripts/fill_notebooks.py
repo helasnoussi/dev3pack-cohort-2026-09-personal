@@ -26,13 +26,22 @@ ROOT = Path("/home/nan/PycharmProjects/Gecko/Dev3Pack-bootcamp-AI-Engineering")
 #: One line per exercise, naming what a better version would do. Generic
 #: encouragement is worse than nothing here -- "make it better" is not a task.
 IMPROVE: dict[str, str] = {
-    "ch02-e1": "add a fourth case that proves which keyword wins when a question contains both",
-    "ch02-e2": "run each lane three times instead of two, and print WHICH reply differed",
+    "ch02-e1": (
+        "prove which keyword wins when a question contains both — with a separate "
+        "print, because this list must stay at exactly three"
+    ),
+    "ch02-e2": (
+        "measure the difference between the live replies instead of printing a "
+        "boolean — `runs` itself must stay at exactly two per lane"
+    ),
     "ch02-e3": "make every sentence name a thing you could actually check tomorrow, not a category",
     "ch02-e4": (
         "carry the elapsed time into the trace, so a slow answer and a dead one look different"
     ),
-    "ch03-e1": "add a field the model must leave empty when it does not know, and prove it does",
+    "ch03-e1": (
+        "make one of the three attempts fail for a NEW reason the others do not "
+        "cover — the list must stay at exactly three, all different"
+    ),
     "ch03-e2": "make the repair step say what it changed, not just that it changed something",
     "ch03-e3": "reject a confidence the citations do not support",
     "ch04-e1": (

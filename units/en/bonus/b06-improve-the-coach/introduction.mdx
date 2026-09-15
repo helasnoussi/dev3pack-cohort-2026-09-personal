@@ -1,0 +1,127 @@
+# Improve the coach
+
+> **Optional, never counted, and free.** Not required for completion or a certificate, and excluded from every total. It runs offline on your own machine: no key, no account, no billing. What it ends in is not a submission but a **pull request against a repository this course actually runs**.
+
+## Outcome
+
+Take a tool you use daily, measure how bad it is, change one thing, measure
+again, and report both numbers — including whatever got worse. Then open the
+pull request.
+
+## The tool
+
+The coach you call in your notebook:
+
+```python
+from bootcamp_agent.coach import coach
+coach("what is AGENTS.md for?")
+```
+
+It is a keyword retriever over the course pages. It is deliberately plain: every
+knob is visible in one short file, and the baseline is the same lexical overlap
+you build in session 6. You already know how it works.
+
+## The number
+
+```python
+from bootcamp_agent.coach_eval import measure
+measure()
+```
+
+```
+hit rate 18/25 = 72% (top-k)
+
+missed:
+  how do I hand my work in
+      got: tracks/final-assignment/introduction, unit0/ask-your-assistant, unit0/get-settled
+  ...
+```
+
+Twenty-five labelled questions in `data/evals/coach.jsonl`, each with the pages
+that should have answered it. A hit means the right **page** was reached. That
+metric is weak on purpose — it says nothing about whether the passage answers
+the question, and replacing it with a better one is itself a contribution.
+
+## A worked example, and it does not end how you expect
+
+The retriever returns three passages. Is three right? Nobody measured it. So
+measure it:
+
+```python
+measure()            # 18/25 = 72%   as shipped
+measure(top_k=5)     # 20/25 = 80%
+measure(top_k=8)     # 22/25 = 88%
+```
+
+Eight points for one argument. Take the win?
+
+**No — read what you bought.** The metric asks "was the right page anywhere in
+what came back". Of course returning more passages wins: at `top_k=25` it would
+score 100% and be useless. You did not make retrieval better, you made the
+learner read more and moved the work onto them. The number went up because the
+metric cannot see the cost.
+
+That is the first thing to learn here: **a metric you can game is a metric you
+will game by accident.** A better one — did the returned passage actually answer
+the question — is itself a contribution, and a more valuable one than any knob.
+
+### And one that was a real win, until it was not
+
+Chunk size looked like the answer. Measured on an earlier corpus:
+
+```
+max_chars=800   18/25 = 72%     as shipped
+max_chars=400   19/25 = 76%     smaller chunks concentrate the signal
+max_chars=300   17/25 = 68%     too small; the curve is not monotonic
+```
+
+A genuine four-point win, and the non-monotonic curve is exactly why you measure
+instead of reasoning.
+
+**Then two pages were added to the course, and it vanished.** On today's corpus
+every chunk size from 200 to 1200 scores 18/25 or worse. Nothing was changed in
+the retriever — the *corpus grew*, the new pages competed, and a tuned constant
+stopped being tuned.
+
+Nothing about that is a failure. It is what a measurement is for. An improvement
+that only holds for one snapshot of the data is a fact about that snapshot, and
+the only way you ever find out is by running the number again.
+
+## Things worth trying
+
+- **Chunk size** — worked above; there is more in it
+- **The stopword list** in `retrieval.py` — which words are you throwing away that carry meaning here?
+- **Title weighting** — a page titled "Handing work in" should win a question about handing work in. *I tried this and it moved nothing. Find out why, or find the version that works*
+- **Query expansion** — "submit" and "hand in" are the same question
+- **A better metric** — does the passage answer the question, or did we just reach its page?
+- **More labelled questions** — twenty-five is thin, and the set is a contribution too
+
+## Not only code
+
+The same bar applies to **translating the course**. `units/<lang>/` is a mirror
+of `units/en/`, and the layout was built for it from the start. A README or a
+unit-0 page in another language is a real contribution to a real course, and for
+many people it is the most useful pull request they can make.
+
+## Evidence artifact
+
+- The before number and the after number, both from `measure()`
+- **One thing that got worse**, or an honest statement that nothing did
+- The pull request, in [gecko-ai-coach](https://github.com/Gecko-Academy/gecko-ai-coach) or in the course repository
+
+## Failure clinic
+
+- **A number with no before.** "76%" alone says nothing
+- **Measuring on the questions you tuned against.** Add your new questions *after* you measure, or you are grading your own homework — session 7 is exactly this
+- **A change you cannot explain.** If you do not know why it helped, you do not know when it will stop helping
+- **Reporting only the win.** The regression you hide is the one that bites somebody else
+
+## Reference
+
+- `src/bootcamp_agent/coach.py` — the retriever and the corpus
+- `src/bootcamp_agent/coach_eval.py` — the measurement
+- `data/evals/coach.jsonl` — the labelled set
+- [Give the course to your assistant](../../unit0/ask-your-assistant.mdx) — the same engine, as an MCP server
+
+<!-- navigation:start -->
+<!-- navigation:end -->

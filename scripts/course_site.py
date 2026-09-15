@@ -156,6 +156,7 @@ UNIT0_ORDER = (
     "onboarding",
     "runtime-lanes",
     "local-model",
+    "ask-your-assistant",
     "how-to-submit",
     "week0",
     "week1",

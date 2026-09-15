@@ -163,7 +163,7 @@ more week lands and you `git pull`.
 
 | Arrives | Date | What is added |
 |---|---|---|
-| Week 0 | now | Everything above except the sessions: the twelve week-0 units, the welcome pages, the bonus track and the whole toolchain (40 paths). |
+| Week 0 | now | Everything above except the sessions: the twelve week-0 units, the welcome pages, the bonus track and the whole toolchain (41 paths). |
 | Week 1 | Mon 14 Sep | unit1 |
 | Week 2 | Mon 21 Sep | unit2 |
 | Week 3 | Mon 28 Sep | unit3 |

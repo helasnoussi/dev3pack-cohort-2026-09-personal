@@ -38,6 +38,7 @@ uv run bootcamp submit chNN --github YOU  # build the hand-in bundle
 - [Onboarding](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/onboarding.html)
 - [Runtime lanes](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/runtime-lanes.html)
 - [A local model, before you need one](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/local-model.html)
+- [Give the course to your assistant](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/ask-your-assistant.html)
 - [Handing work in](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/how-to-submit.html)
 - [Week 0 — the prerequisite](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/week0.html)
 - [Week 1 — Contracts, adapters, tools, and a first agent](https://gecko-academy.github.io/dev3pack-cohort-2026-09/unit0/week1.html)

@@ -11,6 +11,8 @@
     title: "Runtime lanes"
   - local: unit0/local-model
     title: "A local model, before you need one"
+  - local: unit0/ask-your-assistant
+    title: "Give the course to your assistant"
   - local: unit0/how-to-submit
     title: "Handing work in"
   - local: unit0/week0
@@ -163,6 +165,10 @@
     sections:
     - local: bonus/b05-deploy-evaluate-teardown/introduction
       title: "Deployment, evaluation, and cloud teardown"
+  - title: "Bonus 6. Improve the coach"
+    sections:
+    - local: bonus/b06-improve-the-coach/introduction
+      title: "Improve the coach"
 
 # Not in this repository yet. Each arrives on its Monday and
 # `git pull` brings it; the dates are in the README.
