@@ -7,7 +7,7 @@ base install never requires a provider package.
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Any, Protocol
 
 from bootcamp_agent.config import ConfigError, Settings
 
@@ -49,11 +49,31 @@ class FakeLLM:
         return self.default
 
 
+def _provider_package(name: str) -> Any:
+    """Import a provider SDK, or say which command installs it.
+
+    Both SDKs are optional extras, so a learner who sets the lane and has not
+    installed one gets `ModuleNotFoundError: No module named 'anthropic'` -- a
+    traceback that names the module and not the fix. On a course whose first
+    week is spent on setup, the error has to carry the command.
+    """
+    import importlib
+
+    try:
+        return importlib.import_module(name)
+    except ModuleNotFoundError as error:
+        raise ConfigError(
+            f"The {name!r} lane needs the {name} package, which is an optional extra.\n"
+            f"    uv sync --extra {name}\n"
+            f"Or stay on the offline lane: set BOOTCAMP_PROVIDER=fake in .env."
+        ) from error
+
+
 class AnthropicClient:
     """Thin adapter over the anthropic SDK (installed via the `anthropic` extra)."""
 
     def __init__(self, api_key: str, model: str) -> None:
-        import anthropic
+        anthropic = _provider_package("anthropic")
 
         self._client = anthropic.Anthropic(api_key=api_key)
         self._model = model
@@ -72,7 +92,7 @@ class OpenAICompatibleClient:
     """Adapter for OpenAI and any OpenAI-compatible endpoint (e.g. OpenRouter)."""
 
     def __init__(self, api_key: str, model: str, base_url: str | None = None) -> None:
-        import openai
+        openai = _provider_package("openai")
 
         self._client = openai.OpenAI(api_key=api_key, base_url=base_url)
         self._model = model
