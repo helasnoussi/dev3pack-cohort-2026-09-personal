@@ -6,8 +6,65 @@ print. Two sessions are assistant-driven, so nothing can re-run them and the
 output you saved is the evidence the marks rest on — save the notebook before
 you submit.
 
+## What each command does
+
+Nothing here is magic, and none of it touches the course repository.
+
+| Command | What it does |
+|---|---|
+| `uv run bootcamp check ch03` | **Runs your notebook** in a separate process and prints which exercises passed. It never writes to your file — so a green check is not yet evidence |
+| `uv run bootcamp submit ch03 --github <you>` | **Reads the notebook as saved on disk** and writes `submissions/<you>/ch03/` — the claim plus the exact notebook it is a claim about. Refuses a notebook with nothing in it |
+| `… --push` | The same, **and then hands it in for you** — three steps, spelled out below |
+| `uv run python scripts/verify_submission.py submissions/<you>/ch03` | **The check CI will run**, on your machine first: re-runs the notebook and compares what it prints against what your claim says |
+| `gh auth login` | Signs the GitHub CLI in, once, so `--push` can act as you |
+
+**The one that catches people:** `check` runs your notebook, `submit` reads your
+file. They are different, which is why a passing check and an empty submission
+can both be true at the same time — **save the notebook before you submit.**
+
+### What `--push` actually does, in three steps
+
+1. **It writes a folder with your submission in it** — `submissions/<you>/ch03/`,
+   holding the claim and the exact notebook the claim is about. That part happens
+   with or without `--push`, and you can open the folder and look at it.
+2. **It makes a fork.** A fork is *your own copy of a repository*, under your own
+   GitHub account. You cannot write to the course's submissions repository —
+   nobody can — so you write to your copy instead. This happens once, ever; after
+   that the fork already exists and the step does nothing.
+3. **It opens a pull request** on the original repository. A pull request is a
+   request to take the change in *your* copy and put it in *theirs* — which is
+   exactly what handing work in is. The command prints the link.
+
+CI then checks the shape of what you sent, and a green pull request is merged
+automatically. Nobody has to be asked, and nothing needs to happen in a browser.
+
+## The short way
+
 ```bash
-uv run bootcamp check ch03                       # what passes, what does not
+uv run bootcamp check ch03                              # what passes, what does not
+uv run bootcamp submit ch03 --github <you> --push       # and hand it in
+```
+
+`--push` forks the submissions repository if you have not already, copies the
+bundle in, commits, pushes, and opens the pull request. It prints the URL. **You
+never touch git.**
+
+Re-submitting updates the same pull request rather than opening a second one,
+because handing in again is the normal case and not a mistake.
+
+**It needs the GitHub CLI**, which is one install and one sign-in:
+
+```bash
+# https://cli.github.com
+gh auth login
+```
+
+Without it, `--push` tells you exactly that and stops. **Your bundle is already
+written either way** — it is never a dead end, only a longer route.
+
+## The long way, which is the same thing by hand
+
+```bash
 uv run bootcamp submit ch03 --github <you>       # writes submissions/<you>/ch03/
 ```
 
@@ -16,6 +73,9 @@ the evidence. Copy the folder into your fork of the submissions repository and
 open a pull request. CI checks the shape, that the folder is yours, that the
 notebook is the file the claim was written against, and that the score follows
 from the passes and help the claim lists.
+
+**Using `gh` by hand?** `gh pr create` needs `--body`, or it hangs waiting for
+input you cannot see.
 
 Merging is automatic: a job merges every green pull request and rebuilds the
 public track. It is scheduled every half hour, but GitHub does not honour that

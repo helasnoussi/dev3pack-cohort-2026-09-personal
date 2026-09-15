@@ -106,6 +106,7 @@ src/bootcamp_agent/curriculum.py
 src/bootcamp_agent/depth_checks.py
 src/bootcamp_agent/documents.py
 src/bootcamp_agent/evals.py
+src/bootcamp_agent/handin.py
 src/bootcamp_agent/hints.py
 src/bootcamp_agent/llm.py
 src/bootcamp_agent/ollama.py

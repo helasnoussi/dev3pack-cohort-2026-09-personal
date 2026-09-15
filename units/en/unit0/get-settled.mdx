@@ -44,7 +44,9 @@ uv run bootcamp start
 - **Fork the submissions repository — once, today.** Press **Fork** on <https://github.com/Gecko-Academy/dev3pack-submissions>
 - **Run every cell, top to bottom.** You want `✅ chNN-eN passed`
 - **Save the notebook.** The outputs only reach the file when you save, and the outputs are your evidence. Skip this and you hand in an empty notebook
-- **Build the bundle** — `uv run bootcamp submit ch01 --github YOUR-LOGIN`
+- **Hand it in, in one command** — `uv run bootcamp submit ch01 --github YOUR-LOGIN --push`
+- **That needs the GitHub CLI** — <https://cli.github.com>, then `gh auth login`. Without it the command says so and stops
+- **No CLI? The long way still works** — `uv run bootcamp submit ch01 --github YOUR-LOGIN` writes the folder; copy it into your fork by hand
 - **Your login is the GitHub one**, not a display name — it is in your profile URL
 - **Check it before the pull request** — `uv run python scripts/verify_submission.py submissions/YOUR-LOGIN/ch01`
 - **Copy the folder into your fork, commit, push, open a pull request**

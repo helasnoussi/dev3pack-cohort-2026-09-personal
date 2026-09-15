@@ -47,6 +47,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from bootcamp_agent.curriculum import (  # noqa: E402
     CAPSTONE,
     CHAPTERS,
+    SUBMISSIONS_URL,  # noqa: E402
     WEEK_TITLES,
 )
 from bootcamp_agent.hints import FULL_MARKS  # noqa: E402
@@ -79,7 +80,7 @@ COHORT = "https://github.com/Gecko-Academy/dev3pack-cohort-2026-09/blob/main"
 #: Where a finished exercise is handed in. Every `Link submission` id resolves to a
 #: folder here once its pull request merges, so the id and the destination are two
 #: halves of one fact and the sheet should carry both.
-SUBMISSIONS = "https://github.com/Gecko-Academy/dev3pack-submissions"
+SUBMISSIONS = SUBMISSIONS_URL
 HEADING = re.compile(r"^#\s+(.+?)\s*(?:\[\[[^\]]*\]\])?\s*$", re.M)
 
 

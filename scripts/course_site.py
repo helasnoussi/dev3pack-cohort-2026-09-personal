@@ -42,6 +42,7 @@ from bootcamp_agent.curriculum import (  # noqa: E402
     CAPSTONE,
     CHAPTERS,
     COURSE_RELEASE,
+    SUBMISSIONS_URL,  # noqa: E402
     TRACKS_ROOT,
     UNITS_ROOT,
     WEEK0_COURSES,
@@ -920,7 +921,7 @@ LLMS = ROOT / "llms.txt"
 #: resolve in THAT tree, not in this one.
 COHORT_URL = "https://github.com/Gecko-Academy/dev3pack-cohort-2026-09"
 SITE_URL = "https://gecko-academy.github.io/dev3pack-cohort-2026-09"
-SUBMIT_URL = "https://github.com/Gecko-Academy/dev3pack-submissions"
+SUBMIT_URL = SUBMISSIONS_URL
 
 
 def render_llms(units: Path | None = None) -> str:

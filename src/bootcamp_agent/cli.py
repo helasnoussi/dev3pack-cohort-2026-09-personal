@@ -400,7 +400,7 @@ def _no_evidence(item: object) -> str:
     return ""
 
 
-def _submit(chapter_id: str, github: str, cohort: str, into: str | None) -> int:
+def _submit(chapter_id: str, github: str, cohort: str, into: str | None, push: bool = False) -> int:
     """Build the bundle a learner opens a pull request with."""
     from pathlib import Path
 
@@ -472,7 +472,28 @@ def _submit(chapter_id: str, github: str, cohort: str, into: str | None) -> int:
         for exercise in result["not_reached"]:
             print(f"  ·  {exercise} never ran")
     print(f"\nwrote {where}")
-    print("commit that folder to your fork and open a pull request.")
+
+    if not push:
+        print("commit that folder to your fork and open a pull request,")
+        print("or let it do that for you:")
+        print(f"    uv run bootcamp submit {item.id} --github {github} --push")
+        return 0
+
+    from bootcamp_agent.handin import HandInError
+    from bootcamp_agent.handin import push as hand_in
+
+    print("\nhanding it in…")
+    try:
+        url = hand_in(where, github, item.id)
+    except HandInError as error:
+        # The bundle is already written, so this is never a dead end: say what
+        # failed, and leave the manual route standing.
+        print(f"\n{error}", file=sys.stderr)
+        print(f"\nYour submission is still at {where}.", file=sys.stderr)
+        print("Copy that folder into your fork and open a pull request.", file=sys.stderr)
+        return 1
+    print(f"\n{OK} handed in: {url}")
+    print("Green CI means accepted. Merging is automatic — nobody has to be asked.")
     return 0
 
 
@@ -530,6 +551,11 @@ def bootcamp(argv: list[str] | None = None) -> int:
     submitter.add_argument("--github", required=True, help="your GitHub username")
     submitter.add_argument("--cohort", default="2026-09", help="which cohort (default 2026-09)")
     submitter.add_argument("--into", help="submissions root (default ./submissions)")
+    submitter.add_argument(
+        "--push",
+        action="store_true",
+        help="fork, commit and open the pull request for you (needs the gh CLI)",
+    )
     args = parser.parse_args(argv)
 
     if args.command == "start":
@@ -545,7 +571,7 @@ def bootcamp(argv: list[str] | None = None) -> int:
     if args.command == "read":
         return _read(args.port, args.build_only)
     if args.command == "submit":
-        return _submit(args.chapter, args.github, args.cohort, args.into)
+        return _submit(args.chapter, args.github, args.cohort, args.into, args.push)
     parser.print_help()
     return 2
 
