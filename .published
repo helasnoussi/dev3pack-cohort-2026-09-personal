@@ -84,6 +84,7 @@ scripts/collect_submissions.py
 scripts/course_html.py
 scripts/course_site.py
 scripts/dev3pack_entry.py
+scripts/fill_notebooks.py
 scripts/notebook_colab.py
 scripts/notebook_index.py
 scripts/publish_cohort.py
