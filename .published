@@ -93,6 +93,11 @@ scripts/start_ollama.sh
 scripts/submit_all.py
 scripts/track.py
 scripts/verify_submission.py
+ship-it/README.md
+ship-it/fixtures/README.md
+ship-it/fixtures/geckocoffee-store.b64
+ship-it/notebook.ipynb
+ship-it/seed/RUNBOOK.md
 src/bootcamp_agent/__init__.py
 src/bootcamp_agent/agent.py
 src/bootcamp_agent/bonus.py
@@ -124,6 +129,11 @@ src/bootcamp_agent/session_checks/ch11.py
 src/bootcamp_agent/session_checks/ch12.py
 src/bootcamp_agent/session_checks/ch13.py
 src/bootcamp_agent/session_checks/ch14.py
+src/bootcamp_agent/shipit/__init__.py
+src/bootcamp_agent/shipit/bonus_checks.py
+src/bootcamp_agent/shipit/borsh_store.py
+src/bootcamp_agent/shipit/server.py
+src/bootcamp_agent/shipit/storefront.py
 src/bootcamp_agent/submission.py
 src/bootcamp_agent/tools.py
 src/bootcamp_agent/track.py
@@ -144,6 +154,7 @@ units/en/bonus/b06-improve-the-coach/introduction.mdx
 units/en/tracks/cookbook/introduction.mdx
 units/en/tracks/depth/introduction.mdx
 units/en/tracks/final-assignment/introduction.mdx
+units/en/tracks/ship-it/introduction.mdx
 units/en/tracks/workspaces/introduction.mdx
 units/en/unit0/ask-your-assistant.mdx
 units/en/unit0/get-settled.mdx

@@ -120,6 +120,7 @@ ALWAYS = (
     "docs/curriculum.md",
     "docs/course-index.md",
     "depth",
+    "ship-it",
     "final_assignment",
     "README.md",
     "SETUP.md",
