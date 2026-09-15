@@ -6,7 +6,7 @@
 # command and works everywhere, so if `make` is missing, read the line and type
 # it instead.
 
-.PHONY: help setup check progress lab submit
+.PHONY: help setup check progress lab submit ollama
 .DEFAULT_GOAL := help
 
 help:  ## show this
@@ -14,6 +14,8 @@ help:  ## show this
 	@echo "  make setup     install everything and check it works  (start here)"
 	@echo "  make lab       open the notebooks"
 	@echo "  make progress  what you have done so far"
+	@echo ""
+	@echo "  make ollama    start the free local model  (optional)"
 	@echo ""
 	@echo "  make check CH=ch02    run one session's checks"
 	@echo "  make submit CH=ch02 GH=your-github-login"
@@ -30,6 +32,9 @@ lab:  ## open the notebooks
 
 progress:  ## the whole course at a glance
 	uv run bootcamp progress
+
+ollama:  ## start the local model lane (optional, free, no key)
+	bash scripts/start_ollama.sh
 
 check:  ## make check CH=ch02
 	@test -n "$(CH)" || (echo "which session? e.g.  make check CH=ch02"; exit 2)

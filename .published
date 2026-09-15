@@ -87,6 +87,7 @@ scripts/dev3pack_entry.py
 scripts/notebook_colab.py
 scripts/notebook_index.py
 scripts/publish_cohort.py
+scripts/start_ollama.sh
 scripts/submit_all.py
 scripts/track.py
 scripts/verify_submission.py
