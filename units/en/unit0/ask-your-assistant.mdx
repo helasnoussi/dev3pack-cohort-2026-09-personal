@@ -1,12 +1,13 @@
 # Give the course to your assistant
 
-Two ways, and they use the same retriever. Neither needs a key.
+Three ways, and they all use the same retriever. None of them needs a key.
 
 - **In the notebook** — `coach("your question")`, answered in the kernel, no assistant involved
+- **In a terminal** — one command, no install, no clone of anything extra
 - **In your assistant** — an MCP server, so Claude Code, Claude Desktop or Cursor can read the course before answering you
 
-Use the first while you work. Add the second once, and your assistant stops
-guessing about this course.
+Use the first while you work. The second when you are not in a notebook. Add the
+third once, and your assistant stops guessing about this course.
 
 ## In the notebook
 
@@ -15,6 +16,51 @@ guessing about this course.
 - It prints the passages **and the page id each came from**. A page id is something you can open; a paraphrase is not
 - It only knows the weeks in **your** clone. Ask about an unpublished week and it says so instead of inventing one
 - No key, no network, no model. It quotes pages, it does not write prose
+
+## In a terminal
+
+The coach is its own small program, and `uvx` runs it straight from GitHub —
+nothing to install, nothing to clone, no PyPI.
+
+```bash
+uvx --from "git+https://github.com/Gecko-Academy/gecko-ai-coach" \
+  ai-coach ask "which sessions need a coding assistant" --pages ./units/en
+```
+
+- **Run it from inside the course folder**, so `./units/en` is the pages you have
+- The first run takes a few seconds while `uvx` fetches it; after that it is instant
+- It prints the passages and the page each came from, exactly like the notebook does
+
+### With a local model, for prose
+
+Without a model you get passages. With one you also get a sentence, and the
+citation stays attached:
+
+```bash
+uvx --from "git+https://github.com/Gecko-Academy/gecko-ai-coach" \
+  ai-coach ask "do I need an API key" --pages ./units/en --provider ollama
+```
+
+```
+No API key is needed for this course; every scored notebook runs offline
+against a deterministic model. [unit0/introduction]
+```
+
+- Needs Ollama running — [a local model](local-model.mdx), or `make ollama`
+- **A 7B model is the floor.** Measured on the same passages, `qwen2.5:7b-instruct`
+  and `llama3.1:8b` both answer; `llama3.2:1b` refuses outright. A tiny model is
+  not a weaker answer, it is no answer
+- `--model llama3.1:8b` picks a different one
+
+### The other two commands
+
+```bash
+ai-coach providers                  # every lane it knows, and which key each needs
+ai-coach measure --cases <file>     # the hit rate against a labelled set
+```
+
+`measure` is the one the [bonus unit](../bonus/b06-improve-the-coach/introduction.mdx)
+is built around: change one thing, run it again, report both numbers.
 
 ## In your assistant
 
