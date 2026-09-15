@@ -155,6 +155,7 @@ UNIT0_ORDER = (
     "get-settled",
     "onboarding",
     "runtime-lanes",
+    "local-model",
     "how-to-submit",
     "week0",
     "week1",

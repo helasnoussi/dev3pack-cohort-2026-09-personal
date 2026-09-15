@@ -9,6 +9,8 @@
     title: "Onboarding"
   - local: unit0/runtime-lanes
     title: "Runtime lanes"
+  - local: unit0/local-model
+    title: "A local model, before you need one"
   - local: unit0/how-to-submit
     title: "Handing work in"
   - local: unit0/week0

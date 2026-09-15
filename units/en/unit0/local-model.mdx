@@ -1,0 +1,67 @@
+# A local model, before you need one
+
+Optional, free, and worth doing before the session that asks for it rather than
+during it. Nothing scored in this course needs a model at all — every check runs
+offline on `fake`. This page is for the sessions that ask you to compare one
+model to another.
+
+## Why bother
+
+- **No key, no card, no bill.** The model runs on your machine and nothing leaves it
+- **It works offline.** On a plane, on hotel wifi, with the network unplugged
+- **It is the same code path.** One line of `.env` changes the lane; your notebook does not change
+- **The alternative costs money.** A key made in a provider console is billed per token — [Claude Pro does not include API credits](runtime-lanes.mdx)
+
+## What it costs you
+
+- **Money** — nothing, ever
+- **Disk** — 4.7 GB for the model this course names
+- **RAM** — about 8 GB while it is answering
+- **Network** — the download, once, and then none at all
+- **Patience** — the first answer after a restart is slow, because the model is being read into memory. After that it is quick
+
+## Install it
+
+- Download from <https://ollama.com/download> — a `.dmg` on macOS, an `.exe` on Windows, one line on Linux
+- Check it arrived — `ollama --version`
+- **Linux without root?** The manual install works: unpack the release tarball into `~/.local` and run `ollama serve` yourself
+
+## Pull the model
+
+- `ollama pull qwen2.5:7b-instruct`
+- **4.7 GB the first time.** Start it before dinner, not before class
+- Confirm it landed — `ollama list`
+- **Tight on RAM?** `ollama pull qwen2.5:3b-instruct` is about half the size. Set it as `BOOTCAMP_MODEL` and everything else is the same
+
+## Point the course at it
+
+- Open `.env` in the course folder — `bootcamp start` already wrote it
+- Change one line — `BOOTCAMP_PROVIDER=ollama`
+- If you chose a different model, set `BOOTCAMP_MODEL=` to its name
+- Check it — `uv run bootcamp doctor`
+
+You want these three:
+
+```
+✅ Ollama server reachable at http://localhost:11434/v1
+✅ Ollama model qwen2.5:7b-instruct pulled
+✅ Ollama round-trip (one short completion)
+```
+
+The third one is the one that matters. The doctor asked your model for a
+completion and got one back.
+
+## When it does not work
+
+- **`no server at http://localhost:11434/v1`** — Ollama is installed but not running. `ollama serve` in another terminal, or start the desktop app
+- **`model ... not pulled`** — the pull did not finish. Run it again; it resumes
+- **It answers, very slowly** — that is a 7B model on a CPU. Try the 3B, or go back to `fake`
+- **Anything else** — `uv run bootcamp doctor` names the fix. Post its output in the group, never your `.env`
+
+## Going back
+
+- `BOOTCAMP_PROVIDER=fake` in `.env`, and you are on the offline lane again
+- **Every scored exercise passes there.** Switching back costs you no marks and never has
+
+<!-- navigation:start -->
+<!-- navigation:end -->
