@@ -109,6 +109,19 @@ uv sync --group dev
 cp .env.example .env
 ```
 
+**macOS only, and it bites before anything can tell you why.** uv marks what it
+installs into `.venv` as hidden, and Python skips a hidden `.pth` file —
+including the one that makes `bootcamp_agent` importable. Every command then
+fails with `ModuleNotFoundError: No module named 'bootcamp_agent'` on a machine
+where nothing is actually wrong.
+
+`uv run bootcamp doctor` repairs it automatically every time it runs. To do it
+by hand:
+
+```bash
+chflags -R nohidden .venv
+```
+
 `uv sync` creates `.venv/` and installs everything, including the dev tools
 (pytest, ruff, notebook tooling). You never activate the venv by hand — always
 prefix commands with `uv run`.
@@ -222,6 +235,7 @@ git push mine main
 | A command is not found | You ran it bare — everything is prefixed `uv run` |
 | Doctor says corpus missing | You're not in the repo root — `cd` into the cloned folder |
 | `Permission denied (publickey)` or `Repository not found` when cloning | The repository is public, so this is an SSH key problem, not an access one. Clone over HTTPS instead: `git clone https://github.com/Gecko-Academy/dev3pack-cohort-2026-09.git` |
+| `ModuleNotFoundError: No module named 'bootcamp_agent'` on macOS | uv hid `.venv`'s `.pth` files on the last `uv sync`. `uv run bootcamp doctor` clears it, or `chflags -R nohidden .venv` |
 | Next week's folder is not there after `git pull` | It has not been published yet. Each week appears on its Monday |
 
 Stuck longer than 15 minutes? Post the doctor output (never your `.env`) in the
