@@ -869,7 +869,18 @@ def render_items() -> str:
         if not chapter.has_notebook:
             continue
         exercises = exercise_ids(chapter.chapter_id)
-        scored = chapter.runs_in_ci
+        # THIS FILE IS THE GRADEBOOK'S COPY OF THE CURRICULUM. It is published to
+        # the submissions repository, whose collector reads it to decide what a
+        # row is worth -- so `scored` here decides whether a score reaches the
+        # app at all.
+        #
+        # It used to be `chapter.runs_in_ci`, which is the third place that
+        # welded "can we re-run it" to "is it worth marks". The other two were
+        # fixed when sessions 1 and 10 became scored; this one was missed, and
+        # the cost was invisible from inside this repository: every ch01 handed
+        # in came back `score: null`, the leaderboard showed 0/0 for everybody,
+        # and nothing here was failing.
+        item = submission.resolve(chapter.chapter_id)
         items.append(
             {
                 "id": chapter.chapter_id,
@@ -877,10 +888,10 @@ def render_items() -> str:
                 "kind": "session",
                 "week": chapter.module,
                 "date": chapter.on.isoformat(),
-                "scored": scored,
-                "verifiable": scored,
+                "scored": item.scored,
+                "verifiable": item.verifiable,
                 "exercises": len(exercises),
-                "max_score": len(exercises) * FULL_MARKS if scored else None,
+                "max_score": item.max_score,
             }
         )
     capstone = unit_exercise_ids(CAPSTONE.prefix)
