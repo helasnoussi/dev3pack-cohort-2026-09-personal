@@ -95,6 +95,7 @@ scripts/track.py
 scripts/verify_submission.py
 src/bootcamp_agent/__init__.py
 src/bootcamp_agent/agent.py
+src/bootcamp_agent/bonus.py
 src/bootcamp_agent/checks.py
 src/bootcamp_agent/cli.py
 src/bootcamp_agent/coach.py
