@@ -153,7 +153,7 @@ def _check(item_id: str) -> int:
     able to run them the same way.
     """
     from bootcamp_agent import submission
-    from bootcamp_agent.coursework import CourseworkError, render, run_notebook
+    from bootcamp_agent.coursework import CourseworkError, render, run_notebook, stored_scorecard
     from bootcamp_agent.curriculum import UnknownChapter
 
     try:
@@ -162,9 +162,26 @@ def _check(item_id: str) -> int:
         print(f"error: {error}", file=sys.stderr)
         return 2
     if not item.verifiable:
+        # NOT RE-RUNNING IS NOT THE SAME AS HAVING NOTHING TO SAY. This used to
+        # stop here and send the learner to Jupyter, which was defensible while
+        # sessions 1 and 10 carried no marks. They carry marks now, and the marks
+        # rest on exactly the outputs sitting in this file -- so a learner who
+        # asks "did it pass?" must be able to get the answer from the same
+        # command as everybody else, rather than by submitting to find out.
+        #
+        # `submit` has always read the file this way. This is the same read.
         print(f"{item.id}: {item.note}")
-        print("Run this one in Jupyter and read its review() cell there.")
-        return 0
+        print("Nothing can replay it, so this reads the outputs you saved.\n")
+        try:
+            card = stored_scorecard(item.notebook, item.id, item.exercises)
+        except CourseworkError as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 1
+        print(render(card))
+        if not card.passed and not card.failed:
+            print("\nThat is what the saved file says, which is nothing yet.")
+            print("Open it in Jupyter, run every cell, SAVE, then check again.")
+        return 0 if not card.failed and not card.not_reached else 1
     print(f"running {item.id} ({item.title})…")
     try:
         card = run_notebook(item.notebook, item.exercises, item.id)
