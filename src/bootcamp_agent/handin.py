@@ -57,6 +57,28 @@ def _require_gh(run: object) -> None:
         raise HandInError("gh is installed but not signed in. Run: gh auth login")
 
 
+def _fork_name(forked_output: str, github: str) -> str:
+    """What the fork is ACTUALLY called, from what gh just said about it.
+
+    Deriving it as `<you>/<upstream name>` is wrong for anybody whose fork has a
+    different name -- and on this course that is not hypothetical. The
+    submissions repository used to carry the cohort date; everyone who forked
+    before it was renamed still has `dev3pack-submissions-2026-09`, and the
+    derived name 404s with "Could not resolve to a Repository", which reads like
+    the fork failed rather than like it was looked for under the wrong name.
+
+    gh names the fork in both of its outcomes -- "Created fork <owner>/<name>"
+    and "<owner>/<name> already exists" -- so the answer is in the reply we
+    already have. The derived name is only the fallback.
+    """
+    import re
+
+    found = re.search(rf"\b{re.escape(github)}/([A-Za-z0-9._-]+)", forked_output)
+    if found:
+        return f"{github}/{found.group(1)}"
+    return f"{github}/{SUBMISSIONS_REPO.split('/')[1]}"
+
+
 def push(bundle: Path, github: str, item_id: str, run: object = _run) -> str:
     """Put `bundle` on the learner's fork and open a pull request. Returns its URL.
 
@@ -66,13 +88,14 @@ def push(bundle: Path, github: str, item_id: str, run: object = _run) -> str:
     if not bundle.is_dir():
         raise HandInError(f"nothing to hand in: {bundle} does not exist")
 
-    fork = f"{github}/{SUBMISSIONS_REPO.split('/')[1]}"
     branch = f"submit/{item_id}"
 
     # Idempotent: gh says "already exists" and exits 0 when the fork is there.
     forked = run(["gh", "repo", "fork", SUBMISSIONS_REPO, "--clone=false", "--remote=false"])
     if forked.code != 0 and "already exists" not in forked.out.lower():
         raise HandInError(f"could not fork {SUBMISSIONS_REPO}:\n{forked.out}")
+
+    fork = _fork_name(forked.out, github)
 
     work = Path.home() / ".bootcamp" / "handin" / github
     if not (work / ".git").is_dir():
@@ -85,9 +108,15 @@ def push(bundle: Path, github: str, item_id: str, run: object = _run) -> str:
     else:
         run(["git", "fetch", "origin"], work)
 
-    # Start from the upstream default branch every time, so a stale fork does not
-    # carry an old submission into this pull request.
-    run(["git", "checkout", "-B", branch, "origin/main"], work)
+    # Start from the fork's default branch every time, so a stale fork does not
+    # carry an old submission into this pull request. The name is ASKED FOR: a
+    # fork made before a rename can sit on `master`, or on the cohort-dated
+    # branch, and hard-coding `main` turns that into "pathspec did not match".
+    head = run(["git", "symbolic-ref", "--short", "refs/remotes/origin/HEAD"], work)
+    default = head.out.strip() if head.code == 0 and "/" in head.out else "origin/main"
+    started = run(["git", "checkout", "-B", branch, default], work)
+    if started.code != 0:
+        raise HandInError(f"could not start a branch from {default} in your fork:\n{started.out}")
 
     destination = work / github / item_id
     if destination.exists():
