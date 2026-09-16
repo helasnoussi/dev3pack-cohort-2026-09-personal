@@ -119,6 +119,11 @@ REPO_MAP: tuple[tuple[str, str], ...] = (
     ),
     ("workspaces/", "Four open projects to build in. Optional, unmarked, no checks."),
     (
+        "demos/",
+        "Short notebooks to run in class and again afterwards. Never graded, never "
+        "submitted; they make one idea concrete in a few minutes.",
+    ),
+    (
         "ship-it/",
         "The optional launch track: turn the capstone into an MCP server somebody else can "
         "call, and a storefront an agent can buy from. Offline and never counted.",
